@@ -73,10 +73,14 @@ func New(url, dir string, width, height int, customArgs ...string) (UI, error) {
 		}
 		dir, tmpDir = name, name
 	}
-	args := append(defaultChromeArgs, fmt.Sprintf("--app=%s", url))
+	args := make([]string, 0)
 	args = append(args, fmt.Sprintf("--user-data-dir=%s", dir))
 	args = append(args, fmt.Sprintf("--window-size=%d,%d", width, height))
 	args = append(args, customArgs...)
+	if len(customArgs) == 0 {
+		args = append(args, defaultChromeArgs...)
+	}
+	args = append(args, fmt.Sprintf("--app=%s", url))
 	args = append(args, "--remote-debugging-port=0")
 
 	chrome, err := newChromeWithArgs(ChromeExecutable(), args...)
